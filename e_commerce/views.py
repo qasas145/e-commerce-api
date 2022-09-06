@@ -2,8 +2,9 @@ from flask import jsonify, request
 from flask_cors import cross_origin
 from flask_restx import Resource
 from .models import Category, Customer, Order, Product
-from .serializer import CategorySerializer, ProductSerializer
+from .serializer import CategorySerializer, CustomerSerializer, OrderSerializer, ProductSerializer
 from werkzeug.datastructures import FileStorage
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class CategoryView(Resource) :
@@ -18,6 +19,9 @@ class CategoryView(Resource) :
         new_category = Category(**data)
         new_category.save()
         return new_category
+
+
+
 
 class ProductView(Resource) :
     from .router import com
@@ -39,3 +43,61 @@ class ProductView(Resource) :
         new_product.save()
         return new_product
 
+
+
+
+
+
+class CustomerView(Resource) :
+    from .router import com
+    @com.marshal_list_with(CustomerSerializer)
+    def get(self) :
+        return Customer.query.all()
+    
+    @com.doc(params={
+        "first_name" : {'in' : 'query', 'required' : True},
+        "last_name" : {'in' : 'query'},
+        'phone' : {'in' : 'query', 'type' :'integer', 'required' : True},
+        'email' : {'in' : 'query', 'type' : 'string', 'required' : True},
+        'password' : {'in' : 'query', 'required' : True},
+    })
+    @com.marshal_with(CustomerSerializer)
+    def post(self) :
+
+        try :
+            request.args._mutable = True
+        except :
+            pass
+        data = request.args
+        new_customer = Customer(**data)
+        new_customer.password = generate_password_hash(new_customer.password)
+        new_customer.save()
+        return new_customer
+
+
+
+
+
+
+
+class OrderView(Resource) :
+    from .router import com
+    @com.marshal_list_with(OrderSerializer)
+    def get(self) :
+        return Order.query.all()
+    
+    @com.doc(params={
+        "product_id" : {'in' : 'query', 'type' : 'Integer', 'required' : True},
+        "cutomer_id" : {'in' : 'query', 'type' : 'Integer', 'required' : True},
+        'quantity' : {'in' : 'query', 'type' :'Integer', 'required' : True},
+        'address' : {'in' : 'query', 'type' : 'string', 'required' : True},
+        'phone' : {'in' : 'query', 'type' : 'Integer', 'required' : True},
+        'status' : {'in' : 'query', 'type' : 'boolean', 'required' : True}
+    })
+    @com.marshal_with(OrderSerializer)
+    def post(self) :
+        print(request.args)
+        data = request.args
+        new_order = Order(**data)
+        new_order.save()
+        return new_order

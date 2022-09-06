@@ -19,3 +19,26 @@ ProductSerializer = com.model(
         "description" : fields.String(),
     }
 )
+
+CustomerSerializer = com.model(
+    "Customer",
+    {
+        "id" : fields.Integer(),
+        "first_name" : fields.String(),
+        "last_name" : fields.String(),
+        "phone" : fields.Integer(),
+        "email" : fields.String()
+    }
+)
+
+OrderSerializer = com.model(
+    "Order",
+    {
+        "id" : fields.Integer(),
+        "product_id" : fields.Integer(),
+        "customer_id" : fields.Integer(),
+        "quantity" : fields.Integer(),
+        "address" : fields.String(),
+        "date" : fields.Date()
+    }
+)

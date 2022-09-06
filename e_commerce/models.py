@@ -59,6 +59,11 @@ class Customer(db.Model) :
         if Customer.query.filter_by(email = self.email) :
             return True
         return False
+    def save(self) :
+        db.session.add(self)
+        db.session.commit()
+    def __repr__(self) -> str:
+        return self.email
 
 class Order(db.Model) :
     id = db.Column(db.Integer, primary_key = True)
@@ -74,3 +79,9 @@ class Order(db.Model) :
     def get_orders_by_customer(customer_id) :
         return Order.query.filter_by(customer = customer_id).order_by(Order.date.desc())
  
+    def save(self) :
+        db.session.add(self)
+        db.session.commit()
+    
+    def __repr__(self) -> str:
+        return f'{self.customer_id} - {self.address}'
