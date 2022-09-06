@@ -46,8 +46,6 @@ class ProductView(Resource) :
 
 
 
-
-
 class CustomerView(Resource) :
     from .router import com
     @com.marshal_list_with(CustomerSerializer)
@@ -77,9 +75,6 @@ class CustomerView(Resource) :
 
 
 
-
-
-
 class OrderView(Resource) :
     from .router import com
     @com.marshal_list_with(OrderSerializer)
@@ -87,17 +82,19 @@ class OrderView(Resource) :
         return Order.query.all()
     
     @com.doc(params={
-        "product_id" : {'in' : 'query', 'type' : 'Integer', 'required' : True},
-        "cutomer_id" : {'in' : 'query', 'type' : 'Integer', 'required' : True},
-        'quantity' : {'in' : 'query', 'type' :'Integer', 'required' : True},
+        "product_id" : {'in' : 'query', 'type' : 'integer', 'required' : True},
+        "customer_id" : {'in' : 'query', 'type' : 'integer', 'required' : True},
+        'quantity' : {'in' : 'query', 'type' :'integer', 'required' : True},
         'address' : {'in' : 'query', 'type' : 'string', 'required' : True},
-        'phone' : {'in' : 'query', 'type' : 'Integer', 'required' : True},
+        'phone' : {'in' : 'query', 'type' : 'integer', 'required' : True},
         'status' : {'in' : 'query', 'type' : 'boolean', 'required' : True}
     })
     @com.marshal_with(OrderSerializer)
     def post(self) :
-        print(request.args)
         data = request.args
         new_order = Order(**data)
+        if new_order.status == 'true' :
+            new_order.status=1
+        else : new_order.status=0
         new_order.save()
         return new_order

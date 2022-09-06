@@ -39,6 +39,7 @@ OrderSerializer = com.model(
         "customer_id" : fields.Integer(),
         "quantity" : fields.Integer(),
         "address" : fields.String(),
-        "date" : fields.Date()
+        "date" : fields.Date(),
+        "status" : fields.Boolean()
     }
 )
