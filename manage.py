@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 import os
 from user.router import user_ns
-from posts.router import post_ns
+# from posts.router import post_ns
 from e_commerce.router import com
 
 
@@ -40,5 +40,5 @@ migrate = Migrate(app, db)
 
 api = Api(app, doc='/api', authorizations=authorization, description="This an api for important news")
 api.add_namespace(user_ns)
-api.add_namespace(post_ns)
+# api.add_namespace(post_ns)
 api.add_namespace(com)
