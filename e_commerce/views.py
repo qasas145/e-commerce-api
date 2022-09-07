@@ -24,13 +24,12 @@ class CategoryView(Resource) :
 
 
 
-
 class CategoryViewPk(Resource) :
     from .router import com
     @com.marshal_with(CategorySerializer)
     def get(self, id) :
         return Category.query.get_or_404(id)
-    @com.doc(params={"name" : {"in" : 'query', 'description' : 'Name of category', 'required' : True}})    
+    @com.doc(params={"name" : {"in" : 'query', 'description' : 'Name of category'}})    
     @com.marshal_with(CategorySerializer)
     def put(self, id) :
         data = request.args

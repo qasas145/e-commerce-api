@@ -52,7 +52,7 @@ class Category(db.Model) :
         db.session.delete(self)
         db.session.commit()
     def update(self, *args, **kwargs) :
-        if kwargs.get("name", None) : self.product_id = kwargs.get("name")
+        if kwargs.get("name", None) : self.name = kwargs.get("name")
         db.session.commit()
     def __repr__(self) -> str:
         return self.name

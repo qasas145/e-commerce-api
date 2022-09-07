@@ -22,6 +22,6 @@ class LoginView(Resource) :
                 access_token = create_access_token(identity=customer.id, expires_delta=timedelta(hours=5))
                 refresh_token = create_refresh_token(identity=customer.id, expires_delta=timedelta(days=2))
                 print("hello")
-                return jsonify({"access_token":access_token, "refresh_token" : refresh_token, "how_to_use":"Enter token on the pattern :Bearer {token}"})
+                return jsonify({"access_token":access_token, "refresh_token" : refresh_token, "how_to_use":"Enter token on the pattern :Bearer <token>"})
             return make_response({'message' : 'Invalid password'}, HTTPStatus.BAD_REQUEST)
         return make_response({'message' : 'Invalid username'}, HTTPStatus.BAD_REQUEST)
