@@ -1,4 +1,5 @@
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 from db import db
 
 
@@ -20,6 +21,17 @@ class Product(db.Model) :
     def save(self) :
         db.session.add(self)
         db.session.commit()
+    def delete(self) :
+        db.session.delete(self)
+        db.session.commit()
+    
+    def update(self, *args, **kwargs) :
+        if kwargs.get("name", None) : self.product_id = kwargs.get("name")
+        if kwargs.get("price", None) : self.product_id = kwargs.get("price")
+        if kwargs.get("category_id", None) : self.product_id = kwargs.get("category_id")
+        if kwargs.get("description", None) : self.product_id = kwargs.get("description")
+        if kwargs.get("image", None) : self.product_id = generate_password_hash(kwargs.get("image"))
+        db.session.commit()
 
    
 class Category(db.Model) :
@@ -36,6 +48,12 @@ class Category(db.Model) :
         db.session.add(self)
         db.session.commit()
 
+    def delete(self) :
+        db.session.delete(self)
+        db.session.commit()
+    def update(self, *args, **kwargs) :
+        if kwargs.get("name", None) : self.product_id = kwargs.get("name")
+        db.session.commit()
     def __repr__(self) -> str:
         return self.name
 
@@ -62,6 +80,17 @@ class Customer(db.Model) :
     def save(self) :
         db.session.add(self)
         db.session.commit()
+    
+    def delete(self) :
+        db.session.delete(self)
+        db.session.commit()
+    def update(self, *args, **kwargs) :
+        if kwargs.get("first_name", None) : self.product_id = kwargs.get("first_name")
+        if kwargs.get("last_name", None) : self.product_id = kwargs.get("last_name")
+        if kwargs.get("phone", None) : self.product_id = kwargs.get("phone")
+        if kwargs.get("email", None) : self.product_id = kwargs.get("email")
+        if kwargs.get("password", None) : self.product_id = generate_password_hash(kwargs.get("password"))
+        db.session.commit()
     def __repr__(self) -> str:
         return self.email
 
@@ -83,5 +112,16 @@ class Order(db.Model) :
         db.session.add(self)
         db.session.commit()
     
+    def delete(self) :
+        db.session.delete(self)
+        db.session.commit()
+    def update(self, *args, **kwargs) :
+        if kwargs.get("product_id", None) : self.product_id = kwargs.get("product_id")
+        if kwargs.get("customer_id", None) : self.product_id = kwargs.get("customer_id")
+        if kwargs.get("address", None) : self.product_id = kwargs.get("address")
+        if kwargs.get("quantity", None) : self.product_id = kwargs.get("quantity")
+        if kwargs.get("address", None) : self.product_id = kwargs.get("address")
+        if kwargs.get("status", None) : self.product_id = kwargs.get("status")
+        db.session.commit()
     def __repr__(self) -> str:
         return f'{self.customer_id} - {self.address}'
