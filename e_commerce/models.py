@@ -26,11 +26,11 @@ class Product(db.Model) :
         db.session.commit()
     
     def update(self, *args, **kwargs) :
-        if kwargs.get("name", None) : self.product_id = kwargs.get("name")
-        if kwargs.get("price", None) : self.product_id = kwargs.get("price")
-        if kwargs.get("category_id", None) : self.product_id = kwargs.get("category_id")
-        if kwargs.get("description", None) : self.product_id = kwargs.get("description")
-        if kwargs.get("image", None) : self.product_id = generate_password_hash(kwargs.get("image"))
+        if kwargs.get("name", None) : self.name = kwargs.get("name")
+        if kwargs.get("price", None) : self.price = kwargs.get("price")
+        if kwargs.get("category_id", None) : self.category_id = kwargs.get("category_id")
+        if kwargs.get("description", None) : self.description = kwargs.get("description")
+        if kwargs.get("image", None) : self.image = generate_password_hash(kwargs.get("image"))
         db.session.commit()
 
    
@@ -85,11 +85,11 @@ class Customer(db.Model) :
         db.session.delete(self)
         db.session.commit()
     def update(self, *args, **kwargs) :
-        if kwargs.get("first_name", None) : self.product_id = kwargs.get("first_name")
-        if kwargs.get("last_name", None) : self.product_id = kwargs.get("last_name")
-        if kwargs.get("phone", None) : self.product_id = kwargs.get("phone")
-        if kwargs.get("email", None) : self.product_id = kwargs.get("email")
-        if kwargs.get("password", None) : self.product_id = generate_password_hash(kwargs.get("password"))
+        if kwargs.get("first_name", None) : self.first_name = kwargs.get("first_name")
+        if kwargs.get("last_name", None) : self.last_name = kwargs.get("last_name")
+        if kwargs.get("phone", None) : self.phone = kwargs.get("phone")
+        if kwargs.get("email", None) : self.email = kwargs.get("email")
+        if kwargs.get("password", None) : self.password = generate_password_hash(kwargs.get("password"))
         db.session.commit()
     def __repr__(self) -> str:
         return self.email
@@ -117,11 +117,10 @@ class Order(db.Model) :
         db.session.commit()
     def update(self, *args, **kwargs) :
         if kwargs.get("product_id", None) : self.product_id = kwargs.get("product_id")
-        if kwargs.get("customer_id", None) : self.product_id = kwargs.get("customer_id")
-        if kwargs.get("address", None) : self.product_id = kwargs.get("address")
-        if kwargs.get("quantity", None) : self.product_id = kwargs.get("quantity")
-        if kwargs.get("address", None) : self.product_id = kwargs.get("address")
-        if kwargs.get("status", None) : self.product_id = kwargs.get("status")
+        if kwargs.get("customer_id", None) : self.customer_id = kwargs.get("customer_id")
+        if kwargs.get("address", None) : self.address = kwargs.get("address")
+        if kwargs.get("quantity", None) : self.quantity = kwargs.get("quantity")
+        if kwargs.get("status", None) : self.status = kwargs.get("status")
         db.session.commit()
     def __repr__(self) -> str:
         return f'{self.customer_id} - {self.address}'

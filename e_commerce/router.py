@@ -1,9 +1,12 @@
 from flask_restx import Namespace
 import sqlalchemy
+
 com = Namespace("e-commerce", description="an api for e-commerce")
 
+from .authentications import LoginView
 from .views import CategoryView, CategoryViewPk, CustomerView, CustomerViewPk, OrderView, OrderViewPk, ProductView, ProductViewPk
 
+com.add_resource(LoginView, "/login/")
 com.add_resource(CategoryView, "/category/")
 com.add_resource(CategoryViewPk, "/category/<int:id>")
 com.add_resource(ProductView, "/product/")
