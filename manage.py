@@ -31,7 +31,7 @@ db.init_app(app)
 
 migrate = Migrate(app, db)
 
-api = Api(app, doc='/api',authorizations=authorizations, description="This an api for important news")
+api = Api(app, doc='/api',authorizations=authorizations, description="This an api for e-commerce app")
 # api.add_namespace(user_ns)
 # api.add_namespace(post_ns)
 api.add_namespace(com)
