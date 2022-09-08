@@ -183,9 +183,12 @@ class OrderView(Resource) :
         'status' : {'in' : 'query', 'type' : 'boolean', 'required' : True}
     })
     @com.marshal_with(OrderSerializer)
+    @com.doc(security="apikey")
+    @jwt_required()
     def post(self) :
         data = request.args
         new_order = Order(**data)
+        new_order.customer_id = get_jwt_identity()
         if new_order.status == 'true' :
             new_order.status=1
         else : new_order.status=0
@@ -200,11 +203,17 @@ class OrderViewPk(Resource) :
     @com.marshal_with(OrderSerializer)
     def get(self, id) :
         return Order.query.get_or_404(id)
+    
+    @com.doc(security="apikey")
+    @jwt_required()
     def delete(self, id) :
         order = Order.query.get_or_404(id)
+        permission_class = IsAuthenticatedOReadOnly().__repr__(get_jwt_identity(), order.customer_id)
+        if permission_class != True :
+            return permission_class
         order.delete()
         return jsonify({'details' : 'deleted .'})
-    @com.marshal_with(OrderSerializer)
+    
     @com.doc(params={
         "product_id" : {'in' : 'query', 'type' : 'integer'},
         "customer_id" : {'in' : 'query', 'type' : 'integer'},
@@ -213,8 +222,13 @@ class OrderViewPk(Resource) :
         'phone' : {'in' : 'query', 'type' : 'integer'},
         'status' : {'in' : 'query', 'type' : 'boolean'}
     })
+    @com.doc(security="apikey")
+    @jwt_required()
     def put(self, id) :
         data = request.args
         order = Order.query.get_or_404(id)
+        permission_class = IsAuthenticatedOReadOnly().__repr__(get_jwt_identity(), order.customer_id)
+        if permission_class != True :
+            return permission_class
         order.update(**data)
-        return order
+        return marshal(order, OrderSerializer)

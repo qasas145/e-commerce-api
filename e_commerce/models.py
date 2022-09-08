@@ -107,7 +107,7 @@ class Order(db.Model) :
 
     @staticmethod
     def get_orders_by_customer(customer_id) :
-        return Order.query.filter_by(customer = customer_id).order_by(Order.date.desc())
+        return Order.query.filter_by(customer_id = customer_id).order_by(Order.date.desc())
  
     def save(self) :
         db.session.add(self)
