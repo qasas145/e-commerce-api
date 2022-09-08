@@ -1,4 +1,4 @@
-import json
+from sqlalchemy import func
 from db import db
 from flask import jsonify, request, make_response
 from .permissions import IsAuthenticatedOReadOnly
@@ -172,6 +172,7 @@ class OrderView(Resource) :
     from .router import com
     @com.marshal_list_with(OrderSerializer)
     def get(self) :
+        quantity_sum = Order.query.with_entities(func.sum(Order.quantity).label("quantity_sum")).first()
         return Order.query.order_by(Order.date.desc()).all()
     
     @com.doc(params={
