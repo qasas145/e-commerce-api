@@ -1,6 +1,5 @@
 from flask_restx import Namespace
 import sqlalchemy
-
 com = Namespace("e-commerce", description="an api for e-commerce")
 
 from .authentications import LoginView

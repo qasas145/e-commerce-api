@@ -1,6 +1,10 @@
-from flask import jsonify, request
+import json
+from db import db
+from flask import jsonify, request, make_response
+from .permissions import IsAuthenticatedOReadOnly
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from http import HTTPStatus
-from flask_restx import Resource
+from flask_restx import Resource, marshal
 from .models import Category, Customer, Order, Product
 from .serializer import CategorySerializer, CustomerSerializer, OrderSerializer, ProductSerializer
 from werkzeug.datastructures import FileStorage
@@ -29,7 +33,7 @@ class CategoryViewPk(Resource) :
     @com.marshal_with(CategorySerializer)
     def get(self, id) :
         return Category.query.get_or_404(id)
-    @com.doc(params={"name" : {"in" : 'query', 'description' : 'Name of category'}})    
+    @com.doc(params={"name" : {"in" : 'query', 'description' : 'Name of category'}})   
     @com.marshal_with(CategorySerializer)
     def put(self, id) :
         data = request.args
@@ -39,7 +43,7 @@ class CategoryViewPk(Resource) :
     def delete(self, id) :
         category = Category.query.get_or_404(id)
         category.delete()
-        return jsonify({'message' : 'deleted .'})
+        return jsonify({'details' : 'deleted .'})
 
 
 
@@ -58,7 +62,6 @@ class ProductView(Resource) :
     @com.expect(parser)
     @com.marshal_with(ProductSerializer)
     def post(self) :
-        print(request.args)
         image = request.files.get('image', None)
         new_product = Product(**request.args, image=image.read())
         new_product.save()
@@ -91,7 +94,7 @@ class ProductViewPk(Resource) :
     def delete(self, id) :
         product = Product.get_product_by_id(id)
         product.delete()
-        return jsonify({'message' : 'deleted .'})
+        return jsonify({'details' : 'deleted .'})
 
 
 
@@ -104,12 +107,11 @@ class CustomerView(Resource) :
     
     @com.doc(params={
         "first_name" : {'in' : 'query', 'required' : True},
-        "last_name" : {'in' : 'query'},
+        "last_name" : {'in' : 'query', 'required' : True},
         'phone' : {'in' : 'query', 'type' :'integer', 'required' : True},
         'email' : {'in' : 'query', 'type' : 'string', 'required' : True},
         'password' : {'in' : 'query', 'required' : True},
     })
-    @com.marshal_with(CustomerSerializer)
     def post(self) :
 
         try :
@@ -118,9 +120,11 @@ class CustomerView(Resource) :
             pass
         data = request.args
         new_customer = Customer(**data)
+        if new_customer.isExists() :
+            return make_response({'details .' : "email is already exists ."})
         new_customer.password = generate_password_hash(new_customer.password)
         new_customer.save()
-        return new_customer
+        return marshal(new_customer, CustomerSerializer)
 
 
 
@@ -138,16 +142,28 @@ class CustomerViewPk(Resource) :
         'email' : {'in' : 'query', 'type' : 'string'},
         'password' : {'in' : 'query'},
     })
-    @com.marshal_with(CustomerSerializer)
+    @com.doc(security="apikey")
+    @jwt_required()
     def put(self, id) :
+        permission_class = IsAuthenticatedOReadOnly().__repr__(get_jwt_identity(), id)
+        if  permission_class != True:
+            return permission_class
         data = request.args
+        if data.get("email", None) :
+            if Customer.get_customer_by_email(email=data.get("email")) :
+                return make_response({'details .' : "email is already exists ."})
         customer = Customer.query.get_or_404(id)
         customer.update(**data)
-        return customer
+        return marshal(customer, CustomerSerializer)
+    @com.doc(security="apikey")
+    @jwt_required()
     def delete(self, id) :
+        permission_class = IsAuthenticatedOReadOnly().__repr__(get_jwt_identity(), id)
+        if  permission_class != True:
+            return permission_class
         customer = Customer.query.get_or_404(id)
         customer.delete()
-        return jsonify({'message' : 'deleted .'})
+        return jsonify({'details' : 'deleted .'})
 
 
 
@@ -187,7 +203,7 @@ class OrderViewPk(Resource) :
     def delete(self, id) :
         order = Order.query.get_or_404(id)
         order.delete()
-        return jsonify({'message' : 'deleted .'})
+        return jsonify({'details' : 'deleted .'})
     @com.marshal_with(OrderSerializer)
     @com.doc(params={
         "product_id" : {'in' : 'query', 'type' : 'integer'},

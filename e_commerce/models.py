@@ -1,5 +1,6 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash
+from flask import make_response
 from db import db
 
 
@@ -70,11 +71,11 @@ class Customer(db.Model) :
     @staticmethod
     def get_customer_by_email(email) :
         try :
-            return Customer.query.filter_by(email = email)
+            return Customer.query.filter_by(email = email).first()
         except :
             return None
     def isExists(self) :
-        if Customer.query.filter_by(email = self.email) :
+        if Customer.query.filter_by(email = self.email).first() :
             return True
         return False
     def save(self) :
