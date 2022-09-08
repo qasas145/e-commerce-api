@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 import os
 from user.router import user_ns
+from authorization import authorizations
 # from posts.router import post_ns
 from e_commerce.router import com
 
@@ -25,20 +26,12 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 JWTManager(app)
 
-authorization = {
-    'apikey' : {
-        'type' : 'apiKey',
-        'in' : 'header',
-        'name' : 'Authorization'
-    }
-}
-
 db.init_app(app)
 
 
 migrate = Migrate(app, db)
 
-api = Api(app, doc='/api', authorizations=authorization, description="This an api for important news")
-api.add_namespace(user_ns)
+api = Api(app, doc='/api',authorizations=authorizations, description="This an api for important news")
+# api.add_namespace(user_ns)
 # api.add_namespace(post_ns)
 api.add_namespace(com)
