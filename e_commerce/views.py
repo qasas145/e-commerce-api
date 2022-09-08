@@ -172,7 +172,7 @@ class OrderView(Resource) :
     from .router import com
     @com.marshal_list_with(OrderSerializer)
     def get(self) :
-        return Order.query.all()
+        return Order.query.order_by(Order.date.desc()).all()
     
     @com.doc(params={
         "product_id" : {'in' : 'query', 'type' : 'integer', 'required' : True},
